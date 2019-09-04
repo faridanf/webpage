@@ -48,10 +48,3 @@ td,th{
     font-weight: normal;
 }
 
-#tab {
- max-width: 650px;
- min-width: 300px;
- margin: 5px auto 5px auto;
- padding: 10px;
- border: 2px double #000;
- } tr:nth-child(even){background-color: #f2f2f2}
