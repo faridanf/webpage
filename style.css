@@ -18,8 +18,8 @@
  text-align: center;}
 
  li {
- display: inline;
- margin: 0px 3px;}
+<!-- display: inline; -->
+ margin: 3px 3px;}
 
 a {
  color: #000000;
