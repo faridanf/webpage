@@ -20,6 +20,10 @@
  li {
  margin: 3px 3px;}
 
+.sans-serif-font {
+  font-family: Arial, sans-serif;
+}
+
 a {
  color: #000000;
  text-decoration: none;
