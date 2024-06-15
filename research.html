@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Farid Aliniaefird (Research)</title>
+        <style>
+            body {
+                margin: 0px;
+                font-family: Arial, sans-serif;  
+                 }
+            .topbar {
+                    background-color: #fff;  /* White */
+                    height: 95px;  /* Adjust height as needed */
+                    width: 100%;
+                    z-index: -1;
+                    }
+           
+            .navybar{
+                     background-color: #15223e;  /* UBC blue (#637293) */
+                     height: 50px;
+                      width: 100%;
+                      
+                     }
+            .navybar a {
+                        color: #fff;  /* White text */
+                         text-decoration: none;  /* Removes underline */
+                         padding: 16px 32px;  /* Padding for better click target */
+                         display: block;  /* Makes link take up full height */
+                         /*text-indent: 200px;  /* Indent the text 20px */
+                         font-size: 20px;  /* Increased font size for the link text */
+                         display: flex;
+  justify-content: space-around; /* Evenly distributes links horizontally */
+  align-items: center; /* Centers links vertically within the footer */
+                        }
+            .logo {
+                   width: 350px;  /* Adjust width as needed for the logo */
+                   height: 50px;  /* Adjust height as needed for the logo */
+                   margin-left: 80px;  /* Indents the image by 50px */
+                   margin-top: 20px;
+                  }   
+                  .background-image {
+                                     position: absolute; /* Overlays the content area */
+                                     top: 100px; /* Positions the image below the navy bar (adjust as needed) */
+                                    left: 0;
+                                    right: 0;
+                                     bottom: 170px;
+                                     background-image: url("class1.png"); /* Replace with image path */
+                                     background-repeat: no-repeat;
+                                     background-size: cover;
+                                     background-position: center;
+                                     z-index: -1; /* Ensures the image appears behind the content area */
+                                     }       
+footer.skewed-footer {
+  position: relative;
+  height: 50px; /* Adjust height as needed */
+  width: 100%;
+  background-color: #010309; /* UBC blue */
+  overflow: hidden; /* Ensures the skewed element stays within the footer */
+}
+
+footer.skewed-footer::after {
+  content: "";
+  position: absolute;
+  top: 100;
+  right: 0;
+  width: 20%;
+  height: 100%;
+  background-color: inherit; /* Inherits the blue color */
+  transform: skewX(-45deg); /* Applies the skew to the right */
+  z-index: -1; /* Ensures the skewed element appears behind the links */
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-around; /* Evenly distributes links horizontally */
+  align-items: center; /* Centers links vertically within the footer */
+  height: 100%; /* Ensures links fill the footer height */
+  padding: 0 20px; /* Adds some padding for better link presentation */
+  color: #fff; /* White text for better readability */
+  text-decoration: none; /* Removes underline from links */
+}
+
+.footer-content a {
+  font-size: 16px; /* Adjust font size as needed */
+  color: #fff;  /* White text */
+   text-decoration: none;  /* Removes underline */
+}
+
+.footer-content a:hover {
+  color: #ddd; /* Slightly lighter blue on hover */
+}
+.publications {
+  /* Style the publications section (e.g., background color, padding) */
+}
+
+.publication-list {
+  list-style: none; /* Remove default bullet points */
+  padding: 0; /* Reset padding for better control */
+  margin: 0; /* Reset margin for better control */
+}
+
+.publication-list li {
+  /* Additional styles for individual publications (optional) */
+  padding-left: 50px; /* Indent each publication entry by 20px (adjust as needed) */
+}
+
+.publication-details {
+  /* Style the publication details container (e.g., padding, border) */
+}
+
+.publication-details h3 {
+  /* Style publication titles (e.g., font size, color) */
+}
+
+.publication-link {
+  /* Style publication links (e.g., color, underline) */
+}
+
+.publication-details p {
+  /* Style publication abstracts (e.g., font size, line-height) */
+}
+
+h2 {
+  text-align: center;
+}
+.hidden-paragraph {
+  display: none;
+}
+                 
+        </style>
+    </head>
+    <body>
+        <div class="topbar">
+            <img src="logo-ubc.png" alt="UBC Logo" class="logo">  
+        </div>
+        <div class="navybar">
+            <a href="https://faridanf.github.io/webpage/">Farid Aliniaeifard</a>
+        </div>
+      
+      
+      
+<footer class="skewed-footer">
+    <div class="footer-content">
+      <a href="https://scholar.google.ca/citations?user=sZxCAtUAAAAJ&hl=en">Google Scholar</a>
+      <a href="research.html">Research</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="students.html">Students</a>
+      <a href="news.html">News & Events</a>
+    </div>
+  </footer>
+
+  <section class="publications">
+    <h2>Publications</h2>
+    <ul class="publication-list">
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, V. Wang, and S. van Willigenburg, Deletion-contraction for a unified Laplacian and applications, Linear Algebra Appl. 3  (2024) 50-95.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, S. Li, and S. van Willigenburg, Generalized chromatic functions,  Int. Math. Res. Not, IMRN,  (2024) [45 pages]. 
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and Nat Thiem, Stanley chromatic functions and a conjecture in the representation theory of unipotent groups, accepted, (FPSAC), 2024.
+          </h3>
+          <p class="hidden-paragraph" >**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, V. Wang, and S. van Willigenburg, P-partition power sums, European J. Combin. 110, 103688 (2023) [16 pages].
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and Nathaniel Thiem, Hopf structures in the representation theory of direct products, Electron. J. Comb. 29, (2022) [33 pages].
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, S. Li, and S. van Willigenburg, Schur functions in noncommuting variables,  Adv. Math. 406, 108536 (2022) [37 pages].
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and N. Thiem, A categorification of the Malvenuto--Reutenauer algebra via a tower of groups,  Adv. Math. 383,  107675 (2021) [43 pages].
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, V. Wang, and S. van Willigenburg, Extended chromatic symmetric functions and equality of ribbon Schur functions,  Adv. in Appl. Math. 128, 102189 (2021) [29 pages]. 
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and Nat Thiem, Stanley chromatic functions and a conjecture in the representation theory of unipotent groups, accepted, (FPSAC), 2024.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and N. Thiem, Pattern groups and a poset based Hopf monoid, J. Combin. Theory Ser. A  172, 105187 (2020)  [31 pages].
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and N. Thiem, The structure of normal lattice supercharacter theories, Algebr. Comb. 3  (2020) 1059-1078.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and N. Thiem, Pattern groups and a poset based Hopf monoid, Proceedings of the 31st Conference on Formal Power
+Series and Algebraic Combinatorics (FPSAC), Ljubljana 2019. 
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, Normal supercharacter theories, Ph.D. thesis, York University, 2017.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and Nat Thiem, Stanley chromatic functions and a conjecture in the representation theory of unipotent groups, accepted, (FPSAC), 2024.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, Normal supercharacter theories and their supercharacters, J. Algebra 469 (2017) 464-484.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, Normal supercharacter theory, Proceedings of the 28th  Conference on Formal Power Series and Algebraic Combinatorics (FPSAC), Vancouver 2016.  
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, M. Behboodi, and Y. Li, The annihilating-ideal graph of a ring, J. Korean Math. Soc. 52 (2015) 1323-1336.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and Y. Li, Zero-divisor graphs for group rings, Comm. Algebra 42 (2014) 4790-4800.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, M. Behboodi, E. Mehdi-Nezhad, and A. Masoud Rahimi, The annihilating-ideal
+graph of a commutative ring with respect to an ideal, Comm. Algebra 42 (2014) 2269-2284.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and Nat Thiem, Stanley chromatic functions and a conjecture in the representation theory of unipotent groups, accepted, (FPSAC), 2024.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            . Aliniaeifard, Zero divisor graph of a group ring, Master's thesis, Brock University, 2013.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and Nat Thiem, Stanley chromatic functions and a conjecture in the representation theory of unipotent groups, accepted, (FPSAC), 2024.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard, Y. Li, and W. Nicholson, Morphic p-groups, J. Pure Appl. Algebra 217 (2013) 1864-1869.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and M. Behboodi, Commutative rings whose zero-divisor
+graphs have positive genus, Comm. Algebra 41  (2013) 3629-3634.
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+      <li>
+        <div class="publication-details">
+          <h3>
+            F. Aliniaeifard and M. Behboodi, Rings whose annihilating-ideal graphs
+            have positive genus, J. Algebra  Appl. 11, 1250049 (2012) [13 pages].
+          </h3>
+          <p class="hidden-paragraph">**Abstract:** Briefly describe the main focus and contribution of the paper here.</p>
+        </div>
+      </li>
+     </ul>
+  </section>
+
+    </body>
+</html>
