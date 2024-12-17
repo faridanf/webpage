@@ -89,10 +89,32 @@ footer.skewed-footer::after {
 .footer-content a:hover {
   color: #ddd; /* Slightly lighter blue on hover */
 }
+
+         
+    .centered-large-margin {
+      margin: 20px auto;
+      text-align: center;
+    }
+    .link-frame {
+      display: inline-block;
+      padding: 10px;
+      border: 2px solid white;
+      background-color: white;
+    }
+    .link-frame a {
+      color: darkblue;
+      text-decoration: none;
+    }
+    .link-frame a:hover {
+      text-decoration: underline;
+    }
+
+
+
                  
     </style>
 
-    </head>
+   
     <body>
         <div class="topbar">
             <img src="logo-ubc.png" alt="UBC Logo" class="logo">  
@@ -119,13 +141,13 @@ footer.skewed-footer::after {
   <center><h3 class="centered-large-margin" style="color: rgb(8, 11, 63);">Postdoctoral Fellow, Department of Mathematics</h3></center>
   <center><h3 class="centered-large-margin" style="color: rgb(8, 11, 63);">University of British Columbia</h3></center>
         
-<center>
-    <p style="color:darkblue;">
-      <a href="https://github.com/Farid-ANF/OptionPricingDocumentation">Data Science Projects: Option Pricing Using Machine Learning</a>
-    </p>
-</center>
-
-        
+  <center>
+    <h4 class="centered-large-margin">
+      <div class="link-frame">
+        <a href="https://github.com/Farid-ANF/OptionPricingDocumentation">Data Science Projects: Option Pricing Using Machine Learning</a>
+      </div>
+    </h4>
+  </center>        
 
     </body>
 </html>
