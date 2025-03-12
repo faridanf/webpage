@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Farid Aliniaeifard (Research)</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background-color: #f1f1f1;
+            }
+            .topbar {
+                background-color: #8c1515; /* Shandong red */
+                height: 95px;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                padding-left: 80px;
+            }
+            .navybar {
+                background-color: #15223e;
+                height: 50px;
+                width: 100%;
+            }
+            .navybar a {
+                color: #fff;
+                text-decoration: none;
+                padding: 16px 32px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 20px;
+            }
+            .logo {
+                width: 350px;
+                height: auto;
+            }
+            footer.skewed-footer {
+                position: relative;
+                height: 50px;
+                width: 100%;
+                background-color: #8c1515;
+                overflow: hidden;
+            }
+            footer.skewed-footer::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 20%;
+                height: 100%;
+                background-color: inherit;
+                transform: skewX(-45deg);
+                z-index: -1;
+            }
+            .footer-content {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                height: 100%;
+                padding: 0 20px;
+                color: #fff;
+            }
+            .footer-content a {
+                font-size: 16px;
+                color: #fff;
+                text-decoration: none;
+            }
+            .footer-content a:hover {
+                color: #ddd;
+            }
+            .publications {
+                padding: 20px;
+                background-color: #fff;
+                margin: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            .publication-list {
+                padding: 0;
+                margin: 0;
+            }
+            .publication-list li {
+                padding-left: 20px;
+                margin-bottom: 15px;
+                list-style-type: decimal;
+            }
+            .publication-details a {
+                color: #8c1515;
+                text-decoration: none;
+            }
+            h2 {
+                text-align: center;
+                color: #8c1515;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="topbar">
+            <img src="logo-shandong.png" alt="Shandong University Logo" class="logo">
+        </div>
+        <div class="navybar">
+            <a href="https://faridanf.github.io/webpage/">Farid Aliniaeifard</a>
+        </div>
+        <footer class="skewed-footer">
+            <div class="footer-content">
+                <a href="https://scholar.google.ca/citations?user=sZxCAtUAAAAJ&hl=en">Google Scholar</a>
+                <a href="research.html">Research</a>
+                <a href="teaching.html">Teaching</a>
+                <a href="students.html">Students</a>
+                <a href="news.html">News & Events</a>
+            </div>
+        </footer>
+        <section class="publications">
+            <h2>Publications</h2>
+            <ul class="publication-list">
+                <li>
+                    <div class="publication-details">
+                        F. Aliniaeifard, V. Wang, and S. van Willigenburg, <a href="https://www.sciencedirect.com/science/article/abs/pii/S0024379524000958">Deletion-contraction for a unified Laplacian and applications</a>, Linear Algebra Appl. 3 (2024) 50-95.
+                    </div>
+                </li>
+                <li>
+                    <div class="publication-details">
+                        F. Aliniaeifard, S. Li, and S. van Willigenburg, <a href="https://academic.oup.com/imrn/article-abstract/2024/5/4456/7222892">Generalized chromatic functions</a>, Int. Math. Res. Not, IMRN, (2024) [45 pages].
+                    </div>
+                </li>
+                <li>
+                    <div class="publication-details">
+                        F. Aliniaeifard and Nat Thiem, Stanley chromatic functions and a conjecture in the representation theory of unipotent groups, accepted, (FPSAC), 2024.
+                    </div>
+                </li>
+                <li>
+                    <div class="publication-details">
+                        F. Aliniaeifard, V. Wang, and S. van Willigenburg, <a href="https://www.sciencedirect.com/science/article/abs/pii/S0195669823000057">P-partition power sums</a>, European J. Combin. 110, 103688 (2023) [16 pages].
+                    </div>
+                </li>
+                <li>
+                    <div class="publication-details">
+                        F. Aliniaeifard and Nathaniel Thiem, <a href="https://www.combinatorics.org/ojs/index.php/eljc/article/view/v29i4p39/8716">Hopf structures in the representation theory of direct products</a>, Electron. J. Comb. 29, (2022) [33 pages].
+                    </div>
+                </li>
+                <li>
+                    <div class="publication-details">
+                        F. Aliniaeifard and Y. Li, <a href="https://www.tandfonline.com/doi/full/10.1080/00927872.2013.827689">Zero-divisor graphs for group rings</a>, Comm. Algebra 42 (2014) 4790-4800.
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </body>
+</html>
