@@ -1,168 +1,216 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title> Farid Aliniaefird</title>
-        <style>
-            body {
-                margin: 0px;
-                font-family: Arial, sans-serif;  
-                 }
-            .topbar {
-                    background-color: #fff;  /* White */
-                    height: 95px;  /* Adjust height as needed */
-                    width: 100%;
-                    z-index: -1;
-                    }
-           
-            .navybar{
-                     background-color: #15223e;  /* UBC blue (#637293) */
-                     height: 50px;
-                      width: 100%;
-                      
-                     }
-            .navybar a {
-                        color: #fff;  /* White text */
-                         text-decoration: none;  /* Removes underline */
-                         padding: 16px 32px;  /* Padding for better click target */
-                         display: block;  /* Makes link take up full height */
-                         /*text-indent: 200px;  /* Indent the text 20px */
-                         font-size: 20px;  /* Increased font size for the link text */
-                         display: flex;
-                         justify-content: space-around; /* Evenly distributes links horizontally */
-                         align-items: center; /* Centers links vertically within the footer */
-                        }
-            .logo {
-                   width: 350px;  /* Adjust width as needed for the logo */
-                   height: 50px;  /* Adjust height as needed for the logo */
-                   margin-left: 80px;  /* Indents the image by 50px */
-                   margin-top: 20px;
-                  }   
-                  .background-image {
-                                     position: absolute; /* Overlays the content area */
-                                     top: 100px; /* Positions the image below the navy bar (adjust as needed) */
-                                    left: 0;
-                                    right: 0;
-                                     bottom: 170px;
-                                     background-image: url("class1.png"); /* Replace with image path */
-                                     background-repeat: no-repeat;
-                                     background-size: cover;
-                                     background-position: center;
-                                     z-index: -1; /* Ensures the image appears behind the content area */
-                                     }       
-footer.skewed-footer {
-  position: relative;
-  height: 50px; /* Adjust height as needed */
-  width: 100%;
-  background-color: #010309; /* UBC blue */
-  overflow: hidden; /* Ensures the skewed element stays within the footer */
-}
-
-footer.skewed-footer::after {
-  content: "";
-  position: absolute;
-  top: 100;
-  right: 0;
-  width: 20%;
-  height: 100%;
-  background-color: inherit; /* Inherits the blue color */
-  transform: skewX(-45deg); /* Applies the skew to the right */
-  z-index: -1; /* Ensures the skewed element appears behind the links */
-}
-
-.footer-content {
-  display: flex;
-  justify-content: space-around; /* Evenly distributes links horizontally */
-  align-items: center; /* Centers links vertically within the footer */
-  height: 100%; /* Ensures links fill the footer height */
-  padding: 0 20px; /* Adds some padding for better link presentation */
-  color: #fff; /* White text for better readability */
-  text-decoration: none; /* Removes underline from links */
-}
-
-.footer-content a {
-  font-size: 16px; /* Adjust font size as needed */
-  color: #fff;  /* White text */
-   text-decoration: none;  /* Removes underline */
-}
-
-.footer-content a:hover {
-  color: #ddd; /* Slightly lighter blue on hover */
-}
-.studentss {
-  /* Style the publications section (e.g., background color, padding) */
-}
-
-.student-list {
-  list-style: none; /* Remove default bullet points */
-  padding: 0; /* Reset padding for better control */
-  margin: 0; /* Reset margin for better control */
-}
-
-.student-list li {
-  /* Additional styles for individual publications (optional) */
-  padding-left: 50px; /* Indent each publication entry by 20px (adjust as needed) */
-}
-
-.student-details {
-  /* Style the publication details container (e.g., padding, border) */
-}
-
-.student-details h3 {
-  /* Style publication titles (e.g., font size, color) */
-}
-
-.student-link {
-  /* Style publication links (e.g., color, underline) */
-}
-
-.student-details p {
-  /* Style publication abstracts (e.g., font size, line-height) */
-}
-
-h2 {
-  text-align: center;
-}
-                 
-        </style>
-    </head>
-    <body>
-        <div class="topbar">
-            <img src="logo-ubc.png" alt="UBC Logo" class="logo">  
-        </div>
-        <div class="navybar">
-            <a href="https://faridanf.github.io/webpage/">Farid Aliniaeifard</a>
-        </div>
-        
-      
-      
-<footer class="skewed-footer">
-    <div class="footer-content">
-      <a href="https://scholar.google.ca/citations?user=sZxCAtUAAAAJ&hl=en">Google Scholar</a>
-      <a href="research.html">Research</a>
-      <a href="teaching.html">Teaching</a>
-      <a href="students.html">Students</a>
-      <a href="news.html">News & Events</a>
+<head>
+    <title>Nested Progress Tracker</title>
+    <style>
+        .part, .subpart { 
+            margin: 10px; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            position: relative;
+        }
+        .part { background-color: #f8f9fa; }
+        .subpart { background-color: #e9ecef; margin-left: 30px; }
+        .completed { background-color: #d4edda; }
+        #progressBar { width: 100%; background-color: #e0e0e0; }
+        #progressFill { height: 20px; background-color: #4CAF50; width: 0%; }
+        .part-actions, .subpart-actions { margin-top: 8px; }
+        .collapse-btn { 
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Nested Progress Tracker</h1>
+    <div id="progressBar">
+        <div id="progressFill"></div>
     </div>
-  </footer>
-
-
-
-
-  <section class="students">
-    <h2>News & Events</h2>
-    <ul class="student-list">
-      <li>
-        <div class="student-details">
-          <h3>
-            <a href="https://www.math.ubc.ca/news-events/awards/apr-8-2022-farid-aliniaeifard-receives-mathematics-department-award-outstanding">Farid Aliniaeifard receives the Mathematics Department Award for Outstanding Teaching by a Postdoctoral Fellow (2022).</a>
-          </h3>
-        </div>
-      </li>
-      </ul>
-    </section>
-
-
-
-
-    </body>
+    <p>Completion: <span id="percent">0</span>% (<span id="completedCount">0</span>/<span id="totalCount">0</span> items)</p>
+    
+    <div id="partsContainer">
+        <!-- Parts and subparts will be added here -->
+    </div>
+    
+    <button onclick="addPart()">Add New Main Part</button>
+    
+    <script>
+        let items = [];
+        
+        function addPart() {
+            const partName = prompt("Enter part name:");
+            if (partName) {
+                const part = {
+                    id: Date.now(),
+                    name: partName,
+                    type: 'part',
+                    completed: false,
+                    collapsed: false,
+                    subparts: []
+                };
+                items.push(part);
+                renderItems();
+            }
+        }
+        
+        function addSubpart(partId) {
+            const part = items.find(p => p.id === partId);
+            if (part) {
+                const subpartName = prompt("Enter subpart name:");
+                if (subpartName) {
+                    const subpart = {
+                        id: Date.now(),
+                        name: subpartName,
+                        type: 'subpart',
+                        completed: false,
+                        parentId: partId
+                    };
+                    part.subparts.push(subpart);
+                    renderItems();
+                }
+            }
+        }
+        
+        function toggleComplete(itemId) {
+            // Find item (could be part or subpart)
+            let item = null;
+            let parentPart = null;
+            
+            // Check main parts first
+            item = items.find(p => p.id === itemId);
+            
+            // If not found in main parts, check subparts
+            if (!item) {
+                for (const part of items) {
+                    const subpart = part.subparts.find(sp => sp.id === itemId);
+                    if (subpart) {
+                        item = subpart;
+                        parentPart = part;
+                        break;
+                    }
+                }
+            }
+            
+            if (item) {
+                item.completed = !item.completed;
+                
+                // If this is a part, update all subparts if marking complete
+                if (item.type === 'part' && item.completed) {
+                    item.subparts.forEach(sp => sp.completed = true);
+                }
+                
+                // If this is a subpart, check if parent part should be complete
+                if (item.type === 'subpart' && parentPart) {
+                    const allSubpartsComplete = parentPart.subparts.every(sp => sp.completed);
+                    if (allSubpartsComplete) {
+                        parentPart.completed = true;
+                    } else {
+                        parentPart.completed = false;
+                    }
+                }
+                
+                updateProgress();
+                renderItems();
+            }
+        }
+        
+        function toggleCollapse(partId) {
+            const part = items.find(p => p.id === partId);
+            if (part) {
+                part.collapsed = !part.collapsed;
+                renderItems();
+            }
+        }
+        
+        function deleteItem(itemId) {
+            // Try to find in main items first
+            const itemIndex = items.findIndex(p => p.id === itemId);
+            if (itemIndex !== -1) {
+                items.splice(itemIndex, 1);
+            } else {
+                // If not found, search in subparts
+                for (const part of items) {
+                    const subpartIndex = part.subparts.findIndex(sp => sp.id === itemId);
+                    if (subpartIndex !== -1) {
+                        part.subparts.splice(subpartIndex, 1);
+                        
+                        // Update parent completion status if needed
+                        if (part.subparts.length === 0) {
+                            part.completed = false;
+                        }
+                        break;
+                    }
+                }
+            }
+            updateProgress();
+            renderItems();
+        }
+        
+        function updateProgress() {
+            // Flatten all items and subitems
+            const allItems = [];
+            items.forEach(part => {
+                allItems.push(part);
+                part.subparts.forEach(subpart => allItems.push(subpart));
+            });
+            
+            const completed = allItems.filter(i => i.completed).length;
+            const total = allItems.length;
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('percent').textContent = percent;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalCount').textContent = total;
+        }
+        
+        function renderItems() {
+            const container = document.getElementById('partsContainer');
+            container.innerHTML = '';
+            
+            items.forEach(part => {
+                const partDiv = document.createElement('div');
+                partDiv.className = `part ${part.completed ? 'completed' : ''}`;
+                partDiv.innerHTML = `
+                    <span class="collapse-btn" onclick="toggleCollapse(${part.id})">
+                        ${part.collapsed ? '⊕' : '⊖'}
+                    </span>
+                    <h3>${part.name}</h3>
+                    <div class="part-actions">
+                        <button onclick="toggleComplete(${part.id})">
+                            ${part.completed ? '✓ Completed' : 'Mark Complete'}
+                        </button>
+                        <button onclick="addSubpart(${part.id})">Add Subpart</button>
+                        <button onclick="deleteItem(${part.id})">Delete</button>
+                    </div>
+                    <div id="subparts-${part.id}"></div>
+                `;
+                container.appendChild(partDiv);
+                
+                // Render subparts if not collapsed
+                const subpartsContainer = document.getElementById(`subparts-${part.id}`);
+                if (!part.collapsed) {
+                    part.subparts.forEach(subpart => {
+                        const subpartDiv = document.createElement('div');
+                        subpartDiv.className = `subpart ${subpart.completed ? 'completed' : ''}`;
+                        subpartDiv.innerHTML = `
+                            <h4>${subpart.name}</h4>
+                            <div class="subpart-actions">
+                                <button onclick="toggleComplete(${subpart.id})">
+                                    ${subpart.completed ? '✓ Completed' : 'Mark Complete'}
+                                </button>
+                                <button onclick="deleteItem(${subpart.id})">Delete</button>
+                            </div>
+                        `;
+                        subpartsContainer.appendChild(subpartDiv);
+                    });
+                }
+            });
+            
+            updateProgress();
+        }
+    </script>
+</body>
 </html>
