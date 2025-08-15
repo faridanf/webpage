@@ -10,213 +10,172 @@ window.onload = function() {
 </script>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Progress Tracker</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        .part, .subpart { 
+            margin: 10px; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            position: relative;
         }
-        .part {
-            margin: 15px 0;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        .part.completed {
-            background-color: #e6f7e6;
-            border-color: #c3e6c3;
-        }
-        .subpart {
-            margin: 10px 0 10px 20px;
-            padding: 10px;
-            border-left: 3px solid #aaa;
-        }
-        .subpart.completed {
-            border-left-color: #28a745;
-        }
-        .progress-container {
-            margin: 20px 0;
-            background: #f1f1f1;
-            border-radius: 5px;
-        }
-        .progress-bar {
-            height: 30px;
-            background: #4CAF50;
-            border-radius: 5px;
-            width: 0%;
-            transition: width 0.3s;
-            text-align: center;
-            color: white;
-            line-height: 30px;
-        }
-        button {
-            padding: 5px 10px;
-            margin: 5px;
-            cursor: pointer;
-        }
-        textarea {
-            width: 100%;
-            min-height: 60px;
-            margin-top: 10px;
-        }
-        .report {
-            background-color: #f8f9fa;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 4px;
-            display: none;
-        }
-        .part-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .part-title {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        .toggle-report {
-            background: none;
-            border: none;
-            color: #007bff;
-            cursor: pointer;
-        }
+        .part { background-color: #f8f9fa; }
+        .subpart { background-color: #e9ecef; margin-left: 20px; }
+        .completed { background-color: #d4edda; }
+        #progressBar { width: 100%; background-color: #e0e0e0; }
+        #progressFill { height: 20px; background-color: #4CAF50; width: 0%; }
+        .details { display: none; margin-top: 10px; padding: 10px; background: white; border: 1px dashed #aaa; }
+        .part-actions, .subpart-actions { margin-top: 5px; }
+        button { margin-right: 5px; }
     </style>
 </head>
 <body>
     <h1>Advanced Progress Tracker</h1>
+    <div id="progressBar">
+        <div id="progressFill"></div>
+    </div>
+    <p>Completion: <span id="percent">0</span>% (<span id="completedCount">0</span>/<span id="totalCount">0</span> items)</p>
     
-    <div class="progress-container">
-        <div id="progressBar" class="progress-bar">0%</div>
+    <div id="partsContainer">
+        <!-- Parts will be added here -->
     </div>
     
-    <div id="partsContainer"></div>
-    
-    <button onclick="addPart()">+ Add Main Part</button>
+    <button onclick="addPart()">Add New Main Part</button>
+    <button onclick="saveData()">Save All Data</button>
+    <button onclick="loadData()">Load Saved Data</button>
     
     <script>
-        // Load data from localStorage or initialize
-        let parts = JSON.parse(localStorage.getItem('progressTrackerParts')) || [];
-        
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            renderParts();
-            updateProgress();
-        });
+        let parts = [];
         
         // Add a new main part
-        function addPart() {
+        function addPart(parentId = null) {
             const partName = prompt("Enter part name:");
             if (partName) {
                 const part = {
                     id: Date.now(),
+                    parentId: parentId,
                     name: partName,
                     completed: false,
+                    details: "",
                     subparts: [],
-                    report: "",
-                    showReport: false
+                    lastEdited: new Date().toISOString()
                 };
-                parts.push(part);
-                saveAndRender();
+                
+                if (parentId) {
+                    const parent = findPart(parentId);
+                    if (parent) parent.subparts.push(part);
+                } else {
+                    parts.push(part);
+                }
+                
+                renderParts();
             }
         }
         
-        // Add subpart to a parent part
-        function addSubpart(partId) {
-            const subpartName = prompt("Enter subpart name:");
-            if (subpartName) {
-                const part = findPart(partId);
-                if (part) {
-                    part.subparts.push({
-                        id: Date.now(),
-                        name: subpartName,
-                        completed: false
-                    });
-                    saveAndRender();
+        // Find part by ID (including subparts)
+        function findPart(partId, partList = parts) {
+            for (const part of partList) {
+                if (part.id === partId) return part;
+                if (part.subparts && part.subparts.length > 0) {
+                    const found = findPart(partId, part.subparts);
+                    if (found) return found;
                 }
             }
+            return null;
         }
         
         // Toggle completion status
-        function toggleComplete(partId, isSubpart = false, parentId = null) {
-            let part;
-            
-            if (isSubpart && parentId) {
-                const parent = findPart(parentId);
-                if (parent) {
-                    part = parent.subparts.find(sp => sp.id === partId);
-                }
-            } else {
-                part = findPart(partId);
-            }
-            
+        function toggleComplete(partId) {
+            const part = findPart(partId);
             if (part) {
                 part.completed = !part.completed;
-                
-                // If marking a main part complete, mark all subparts complete
-                if (!isSubpart && part.completed) {
-                    part.subparts.forEach(sp => sp.completed = true);
-                }
-                
-                saveAndRender();
+                part.lastEdited = new Date().toISOString();
+                updateProgress();
+                renderParts();
             }
         }
         
-        // Update report for a part
-        function updateReport(partId, report) {
+        // Edit part details
+        function editPart(partId) {
             const part = findPart(partId);
             if (part) {
-                part.report = report;
-                saveData();
-            }
-        }
-        
-        // Toggle report visibility
-        function toggleReport(partId) {
-            const part = findPart(partId);
-            if (part) {
-                part.showReport = !part.showReport;
-                saveAndRender();
-            }
-        }
-        
-        // Find part by ID
-        function findPart(partId) {
-            return parts.find(p => p.id === partId);
-        }
-        
-        // Calculate overall progress
-        function calculateProgress() {
-            if (parts.length === 0) return 0;
-            
-            let totalItems = 0;
-            let completedItems = 0;
-            
-            parts.forEach(part => {
-                totalItems += 1 + part.subparts.length;
-                if (part.completed) {
-                    completedItems += 1 + part.subparts.length;
-                } else {
-                    completedItems += part.subparts.filter(sp => sp.completed).length;
+                const newName = prompt("Edit part name:", part.name);
+                if (newName !== null) {
+                    part.name = newName;
+                    const newDetails = prompt("Edit details/report:", part.details);
+                    if (newDetails !== null) part.details = newDetails;
+                    part.lastEdited = new Date().toISOString();
+                    renderParts();
                 }
-            });
-            
-            return Math.round((completedItems / totalItems) * 100);
+            }
         }
         
-        // Update progress display
+        // Delete part
+        function deletePart(partId) {
+            if (confirm("Are you sure you want to delete this part and all its subparts?")) {
+                for (let i = 0; i < parts.length; i++) {
+                    if (parts[i].id === partId) {
+                        parts.splice(i, 1);
+                        renderParts();
+                        return;
+                    }
+                    if (parts[i].subparts && parts[i].subparts.length > 0) {
+                        deleteSubpart(parts[i].subparts, partId);
+                    }
+                }
+            }
+        }
+        
+        function deleteSubpart(subparts, partId) {
+            for (let i = 0; i < subparts.length; i++) {
+                if (subparts[i].id === partId) {
+                    subparts.splice(i, 1);
+                    renderParts();
+                    return;
+                }
+                if (subparts[i].subparts && subparts[i].subparts.length > 0) {
+                    deleteSubpart(subparts[i].subparts, partId);
+                }
+            }
+        }
+        
+        // Toggle details visibility
+        function toggleDetails(partId) {
+            const detailsDiv = document.getElementById(`details-${partId}`);
+            if (detailsDiv) {
+                detailsDiv.style.display = detailsDiv.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+        
+        // Calculate progress
         function updateProgress() {
-            const percent = calculateProgress();
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = percent + '%';
-            progressBar.textContent = percent + '%';
+            const { completed, total } = calculateCompletion(parts);
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('percent').textContent = percent;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalCount').textContent = total;
+        }
+        
+        // Recursive completion calculation
+        function calculateCompletion(partList) {
+            let completed = 0;
+            let total = 0;
+            
+            for (const part of partList) {
+                total++;
+                if (part.completed) completed++;
+                
+                if (part.subparts && part.subparts.length > 0) {
+                    const sub = calculateCompletion(part.subparts);
+                    completed += sub.completed;
+                    total += sub.total;
+                }
+            }
+            
+            return { completed, total };
         }
         
         // Render all parts
@@ -224,73 +183,76 @@ window.onload = function() {
             const container = document.getElementById('partsContainer');
             container.innerHTML = '';
             
-            if (parts.length === 0) {
-                container.innerHTML = '<p>No parts added yet. Click "Add Main Part" to get started.</p>';
-                return;
-            }
-            
-            parts.forEach(part => {
-                const partDiv = document.createElement('div');
-                partDiv.className = `part ${part.completed ? 'completed' : ''}`;
-                
-                // Count completed subparts
-                const completedSubparts = part.subparts.filter(sp => sp.completed).length;
-                const subpartStatus = part.subparts.length > 0 ? 
-                    ` (${completedSubparts}/${part.subparts.length} subparts)` : '';
-                
-                partDiv.innerHTML = `
-                    <div class="part-header">
-                        <span class="part-title">${part.name}${subpartStatus}</span>
-                        <div>
+            function renderPartList(partList, isSubpart = false) {
+                partList.forEach(part => {
+                    const partDiv = document.createElement('div');
+                    partDiv.className = `${isSubpart ? 'subpart' : 'part'} ${part.completed ? 'completed' : ''}`;
+                    
+                    partDiv.innerHTML = `
+                        <h3>${part.name} 
+                            <small>${new Date(part.lastEdited).toLocaleString()}</small>
+                            ${part.subparts.length > 0 ? `<span style="float:right">${part.subparts.filter(sp => sp.completed).length}/${part.subparts.length} subparts</span>` : ''}
+                        </h3>
+                        <div class="${isSubpart ? 'subpart-actions' : 'part-actions'}">
                             <button onclick="toggleComplete(${part.id})">
                                 ${part.completed ? '✓ Completed' : 'Mark Complete'}
                             </button>
-                            <button onclick="addSubpart(${part.id})">+ Add Subpart</button>
-                            <button class="toggle-report" onclick="toggleReport(${part.id})">
-                                ${part.showReport ? 'Hide Report' : 'Show Report'}
-                            </button>
+                            <button onclick="editPart(${part.id})">Edit</button>
+                            <button onclick="deletePart(${part.id})">Delete</button>
+                            <button onclick="addPart(${part.id})">Add Subpart</button>
+                            <button onclick="toggleDetails(${part.id})">Details</button>
                         </div>
-                    </div>
+                        <div id="details-${part.id}" class="details">
+                            <h4>Details/Report</h4>
+                            <p>${part.details || 'No details added yet.'}</p>
+                            <textarea id="details-text-${part.id}" rows="4" style="width:100%">${part.details}</textarea>
+                            <button onclick="saveDetails(${part.id})">Save Details</button>
+                        </div>
+                    `;
                     
-                    <div class="report" style="display: ${part.showReport ? 'block' : 'none'}">
-                        <textarea placeholder="Enter your report/notes for this part..." 
-                                  onchange="updateReport(${part.id}, this.value)">${part.report || ''}</textarea>
-                    </div>
+                    container.appendChild(partDiv);
                     
-                    <div id="subparts-${part.id}"></div>
-                `;
-                
-                container.appendChild(partDiv);
-                
-                // Render subparts
-                const subpartsContainer = document.getElementById(`subparts-${part.id}`);
-                if (part.subparts.length > 0) {
-                    part.subparts.forEach(subpart => {
-                        const subpartDiv = document.createElement('div');
-                        subpartDiv.className = `subpart ${subpart.completed ? 'completed' : ''}`;
-                        subpartDiv.innerHTML = `
-                            ${subpart.name}
-                            <button onclick="toggleComplete(${subpart.id}, true, ${part.id})">
-                                ${subpart.completed ? '✓ Completed' : 'Mark Complete'}
-                            </button>
-                        `;
-                        subpartsContainer.appendChild(subpartDiv);
-                    });
-                }
-            });
-        }
-        
-        // Save data and re-render
-        function saveAndRender() {
-            saveData();
-            renderParts();
+                    if (part.subparts && part.subparts.length > 0) {
+                        renderPartList(part.subparts, true);
+                    }
+                });
+            }
+            
+            renderPartList(parts);
             updateProgress();
         }
         
-        // Save to localStorage
-        function saveData() {
-            localStorage.setItem('progressTrackerParts', JSON.stringify(parts));
+        // Save details
+        function saveDetails(partId) {
+            const part = findPart(partId);
+            const textarea = document.getElementById(`details-text-${partId}`);
+            if (part && textarea) {
+                part.details = textarea.value;
+                part.lastEdited = new Date().toISOString();
+                renderParts();
+            }
         }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('progressTrackerData', JSON.stringify(parts));
+            alert('Data saved successfully!');
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('progressTrackerData');
+            if (savedData) {
+                parts = JSON.parse(savedData);
+                renderParts();
+                alert('Data loaded successfully!');
+            } else {
+                alert('No saved data found!');
+            }
+        }
+        
+        // Initialize
+        renderParts();
     </script>
 </body>
 </html>
