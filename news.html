@@ -9,219 +9,287 @@ window.onload = function() {
 };
 </script>
 
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Nested Progress Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Progress Tracker</title>
     <style>
-        .part, .subpart { 
-            margin: 10px; 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            position: relative;
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        .part { background-color: #f8f9fa; }
-        .subpart { background-color: #e9ecef; margin-left: 30px; }
-        .completed { background-color: #d4edda; }
-        #progressBar { width: 100%; background-color: #e0e0e0; }
-        #progressFill { height: 20px; background-color: #4CAF50; width: 0%; }
-        .part-actions, .subpart-actions { margin-top: 8px; }
-        .collapse-btn { 
-            position: absolute;
-            right: 10px;
-            top: 10px;
+        .part {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .part.completed {
+            background-color: #e6f7e6;
+            border-color: #c3e6c3;
+        }
+        .subpart {
+            margin: 10px 0 10px 20px;
+            padding: 10px;
+            border-left: 3px solid #aaa;
+        }
+        .subpart.completed {
+            border-left-color: #28a745;
+        }
+        .progress-container {
+            margin: 20px 0;
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        .progress-bar {
+            height: 30px;
+            background: #4CAF50;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        textarea {
+            width: 100%;
+            min-height: 60px;
+            margin-top: 10px;
+        }
+        .report {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .part-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .part-title {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .toggle-report {
+            background: none;
+            border: none;
+            color: #007bff;
             cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>My Nested Progress Tracker</h1>
-    <div id="progressBar">
-        <div id="progressFill"></div>
-    </div>
-    <p>Completion: <span id="percent">0</span>% (<span id="completedCount">0</span>/<span id="totalCount">0</span> items)</p>
+    <h1>Advanced Progress Tracker</h1>
     
-    <div id="partsContainer">
-        <!-- Parts and subparts will be added here -->
+    <div class="progress-container">
+        <div id="progressBar" class="progress-bar">0%</div>
     </div>
     
-    <button onclick="addPart()">Add New Main Part</button>
+    <div id="partsContainer"></div>
+    
+    <button onclick="addPart()">+ Add Main Part</button>
     
     <script>
-        let items = [];
+        // Load data from localStorage or initialize
+        let parts = JSON.parse(localStorage.getItem('progressTrackerParts')) || [];
         
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderParts();
+            updateProgress();
+        });
+        
+        // Add a new main part
         function addPart() {
             const partName = prompt("Enter part name:");
             if (partName) {
                 const part = {
                     id: Date.now(),
                     name: partName,
-                    type: 'part',
                     completed: false,
-                    collapsed: false,
-                    subparts: []
+                    subparts: [],
+                    report: "",
+                    showReport: false
                 };
-                items.push(part);
-                renderItems();
+                parts.push(part);
+                saveAndRender();
             }
         }
         
+        // Add subpart to a parent part
         function addSubpart(partId) {
-            const part = items.find(p => p.id === partId);
-            if (part) {
-                const subpartName = prompt("Enter subpart name:");
-                if (subpartName) {
-                    const subpart = {
+            const subpartName = prompt("Enter subpart name:");
+            if (subpartName) {
+                const part = findPart(partId);
+                if (part) {
+                    part.subparts.push({
                         id: Date.now(),
                         name: subpartName,
-                        type: 'subpart',
-                        completed: false,
-                        parentId: partId
-                    };
-                    part.subparts.push(subpart);
-                    renderItems();
+                        completed: false
+                    });
+                    saveAndRender();
                 }
             }
         }
         
-        function toggleComplete(itemId) {
-            // Find item (could be part or subpart)
-            let item = null;
-            let parentPart = null;
+        // Toggle completion status
+        function toggleComplete(partId, isSubpart = false, parentId = null) {
+            let part;
             
-            // Check main parts first
-            item = items.find(p => p.id === itemId);
-            
-            // If not found in main parts, check subparts
-            if (!item) {
-                for (const part of items) {
-                    const subpart = part.subparts.find(sp => sp.id === itemId);
-                    if (subpart) {
-                        item = subpart;
-                        parentPart = part;
-                        break;
-                    }
+            if (isSubpart && parentId) {
+                const parent = findPart(parentId);
+                if (parent) {
+                    part = parent.subparts.find(sp => sp.id === partId);
                 }
-            }
-            
-            if (item) {
-                item.completed = !item.completed;
-                
-                // If this is a part, update all subparts if marking complete
-                if (item.type === 'part' && item.completed) {
-                    item.subparts.forEach(sp => sp.completed = true);
-                }
-                
-                // If this is a subpart, check if parent part should be complete
-                if (item.type === 'subpart' && parentPart) {
-                    const allSubpartsComplete = parentPart.subparts.every(sp => sp.completed);
-                    if (allSubpartsComplete) {
-                        parentPart.completed = true;
-                    } else {
-                        parentPart.completed = false;
-                    }
-                }
-                
-                updateProgress();
-                renderItems();
-            }
-        }
-        
-        function toggleCollapse(partId) {
-            const part = items.find(p => p.id === partId);
-            if (part) {
-                part.collapsed = !part.collapsed;
-                renderItems();
-            }
-        }
-        
-        function deleteItem(itemId) {
-            // Try to find in main items first
-            const itemIndex = items.findIndex(p => p.id === itemId);
-            if (itemIndex !== -1) {
-                items.splice(itemIndex, 1);
             } else {
-                // If not found, search in subparts
-                for (const part of items) {
-                    const subpartIndex = part.subparts.findIndex(sp => sp.id === itemId);
-                    if (subpartIndex !== -1) {
-                        part.subparts.splice(subpartIndex, 1);
-                        
-                        // Update parent completion status if needed
-                        if (part.subparts.length === 0) {
-                            part.completed = false;
-                        }
-                        break;
-                    }
-                }
+                part = findPart(partId);
             }
-            updateProgress();
-            renderItems();
+            
+            if (part) {
+                part.completed = !part.completed;
+                
+                // If marking a main part complete, mark all subparts complete
+                if (!isSubpart && part.completed) {
+                    part.subparts.forEach(sp => sp.completed = true);
+                }
+                
+                saveAndRender();
+            }
         }
         
-        function updateProgress() {
-            // Flatten all items and subitems
-            const allItems = [];
-            items.forEach(part => {
-                allItems.push(part);
-                part.subparts.forEach(subpart => allItems.push(subpart));
+        // Update report for a part
+        function updateReport(partId, report) {
+            const part = findPart(partId);
+            if (part) {
+                part.report = report;
+                saveData();
+            }
+        }
+        
+        // Toggle report visibility
+        function toggleReport(partId) {
+            const part = findPart(partId);
+            if (part) {
+                part.showReport = !part.showReport;
+                saveAndRender();
+            }
+        }
+        
+        // Find part by ID
+        function findPart(partId) {
+            return parts.find(p => p.id === partId);
+        }
+        
+        // Calculate overall progress
+        function calculateProgress() {
+            if (parts.length === 0) return 0;
+            
+            let totalItems = 0;
+            let completedItems = 0;
+            
+            parts.forEach(part => {
+                totalItems += 1 + part.subparts.length;
+                if (part.completed) {
+                    completedItems += 1 + part.subparts.length;
+                } else {
+                    completedItems += part.subparts.filter(sp => sp.completed).length;
+                }
             });
             
-            const completed = allItems.filter(i => i.completed).length;
-            const total = allItems.length;
-            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-            
-            document.getElementById('progressFill').style.width = percent + '%';
-            document.getElementById('percent').textContent = percent;
-            document.getElementById('completedCount').textContent = completed;
-            document.getElementById('totalCount').textContent = total;
+            return Math.round((completedItems / totalItems) * 100);
         }
         
-        function renderItems() {
+        // Update progress display
+        function updateProgress() {
+            const percent = calculateProgress();
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+        }
+        
+        // Render all parts
+        function renderParts() {
             const container = document.getElementById('partsContainer');
             container.innerHTML = '';
             
-            items.forEach(part => {
+            if (parts.length === 0) {
+                container.innerHTML = '<p>No parts added yet. Click "Add Main Part" to get started.</p>';
+                return;
+            }
+            
+            parts.forEach(part => {
                 const partDiv = document.createElement('div');
                 partDiv.className = `part ${part.completed ? 'completed' : ''}`;
+                
+                // Count completed subparts
+                const completedSubparts = part.subparts.filter(sp => sp.completed).length;
+                const subpartStatus = part.subparts.length > 0 ? 
+                    ` (${completedSubparts}/${part.subparts.length} subparts)` : '';
+                
                 partDiv.innerHTML = `
-                    <span class="collapse-btn" onclick="toggleCollapse(${part.id})">
-                        ${part.collapsed ? '⊕' : '⊖'}
-                    </span>
-                    <h3>${part.name}</h3>
-                    <div class="part-actions">
-                        <button onclick="toggleComplete(${part.id})">
-                            ${part.completed ? '✓ Completed' : 'Mark Complete'}
-                        </button>
-                        <button onclick="addSubpart(${part.id})">Add Subpart</button>
-                        <button onclick="deleteItem(${part.id})">Delete</button>
+                    <div class="part-header">
+                        <span class="part-title">${part.name}${subpartStatus}</span>
+                        <div>
+                            <button onclick="toggleComplete(${part.id})">
+                                ${part.completed ? '✓ Completed' : 'Mark Complete'}
+                            </button>
+                            <button onclick="addSubpart(${part.id})">+ Add Subpart</button>
+                            <button class="toggle-report" onclick="toggleReport(${part.id})">
+                                ${part.showReport ? 'Hide Report' : 'Show Report'}
+                            </button>
+                        </div>
                     </div>
+                    
+                    <div class="report" style="display: ${part.showReport ? 'block' : 'none'}">
+                        <textarea placeholder="Enter your report/notes for this part..." 
+                                  onchange="updateReport(${part.id}, this.value)">${part.report || ''}</textarea>
+                    </div>
+                    
                     <div id="subparts-${part.id}"></div>
                 `;
+                
                 container.appendChild(partDiv);
                 
-                // Render subparts if not collapsed
+                // Render subparts
                 const subpartsContainer = document.getElementById(`subparts-${part.id}`);
-                if (!part.collapsed) {
+                if (part.subparts.length > 0) {
                     part.subparts.forEach(subpart => {
                         const subpartDiv = document.createElement('div');
                         subpartDiv.className = `subpart ${subpart.completed ? 'completed' : ''}`;
                         subpartDiv.innerHTML = `
-                            <h4>${subpart.name}</h4>
-                            <div class="subpart-actions">
-                                <button onclick="toggleComplete(${subpart.id})">
-                                    ${subpart.completed ? '✓ Completed' : 'Mark Complete'}
-                                </button>
-                                <button onclick="deleteItem(${subpart.id})">Delete</button>
-                            </div>
+                            ${subpart.name}
+                            <button onclick="toggleComplete(${subpart.id}, true, ${part.id})">
+                                ${subpart.completed ? '✓ Completed' : 'Mark Complete'}
+                            </button>
                         `;
                         subpartsContainer.appendChild(subpartDiv);
                     });
                 }
             });
-            
+        }
+        
+        // Save data and re-render
+        function saveAndRender() {
+            saveData();
+            renderParts();
             updateProgress();
+        }
+        
+        // Save to localStorage
+        function saveData() {
+            localStorage.setItem('progressTrackerParts', JSON.stringify(parts));
         }
     </script>
 </body>
