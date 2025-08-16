@@ -8,7 +8,6 @@ window.onload = function() {
     // Page content will show only if password is correct
 };
 </script>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,9 +27,23 @@ window.onload = function() {
         textarea { width: 100%; min-height: 60px; margin-top: 5px; }
         .hidden { display: none; }
         .edit-form { margin-top: 10px; }
+        .part-progress { margin: 5px 0; }
+        .part-progress-bar { height: 10px; background-color: #e0e0e0; border-radius: 5px; overflow: hidden; }
+        .part-progress-fill { height: 100%; background-color: #2196F3; width: 0%; transition: width 0.3s; }
     </style>
 </head>
 <body>
+    <script>
+        window.onload = function() {
+            const password = prompt("Enter password to view this page:");
+            // Replace 'yourpassword' with your actual password
+            if (password !== "Far@par1024154") {
+                window.location.href = "https://your-github-pages-site.com"; // Redirect if wrong
+            }
+            // Page content will show only if password is correct
+        };
+    </script>
+
     <h1>Project Progress Tracker</h1>
     
     <div id="progressBar">
@@ -79,7 +92,7 @@ window.onload = function() {
             document.getElementById('newPartDesc').value = '';
         }
         
-        // Add a new part
+        // Add a new part (now adds at the top)
         function addPart() {
             const partName = document.getElementById('newPartName').value.trim();
             const partDesc = document.getElementById('newPartDesc').value.trim();
@@ -89,11 +102,11 @@ window.onload = function() {
                     id: Date.now(),
                     name: partName,
                     description: partDesc,
-                    completed: false,
                     subparts: [],
                     reports: []
                 };
-                parts.push(part);
+                // Add to beginning of array instead of end
+                parts.unshift(part);
                 saveData();
                 renderParts();
                 hideAddPartForm();
@@ -102,14 +115,12 @@ window.onload = function() {
             }
         }
         
-        // Toggle completion status
-        function toggleComplete(partId) {
-            const part = findPart(partId);
-            if (part) {
-                part.completed = !part.completed;
-                saveData();
-                renderParts();
-            }
+        // Calculate part completion percentage
+        function calculatePartCompletion(part) {
+            if (part.subparts.length === 0) return 0;
+            
+            const completedSubparts = part.subparts.filter(sp => sp.completed).length;
+            return Math.round((completedSubparts / part.subparts.length) * 100);
         }
         
         // Add a subpart
@@ -209,25 +220,22 @@ window.onload = function() {
         
         // Calculate and update progress
         function updateProgress() {
-            let totalItems = 0;
-            let completedItems = 0;
+            let totalParts = parts.length;
+            let completedParts = 0;
             
             parts.forEach(part => {
-                totalItems++;
-                if (part.completed) completedItems++;
-                
-                part.subparts.forEach(subpart => {
-                    totalItems++;
-                    if (subpart.completed) completedItems++;
-                });
+                const completion = calculatePartCompletion(part);
+                if (completion === 100) {
+                    completedParts++;
+                }
             });
             
-            const percent = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+            const percent = totalParts > 0 ? Math.round((completedParts / totalParts) * 100) : 0;
             
             document.getElementById('progressFill').style.width = percent + '%';
             document.getElementById('percent').textContent = percent;
-            document.getElementById('completedCount').textContent = completedItems;
-            document.getElementById('totalCount').textContent = totalItems;
+            document.getElementById('completedCount').textContent = completedParts;
+            document.getElementById('totalCount').textContent = totalParts;
         }
         
         // Render all parts
@@ -241,8 +249,9 @@ window.onload = function() {
             }
             
             parts.forEach(part => {
+                const partCompletion = calculatePartCompletion(part);
                 const partDiv = document.createElement('div');
-                partDiv.className = `part ${part.completed ? 'completed' : ''}`;
+                partDiv.className = `part ${partCompletion === 100 ? 'completed' : ''}`;
                 partDiv.id = `part-${part.id}`;
                 
                 // Part header with title and buttons
@@ -251,9 +260,6 @@ window.onload = function() {
                 partHeader.innerHTML = `
                     <span class="part-title">${escapeHtml(part.name)}</span>
                     <div class="part-actions">
-                        <button onclick="toggleComplete(${part.id})">
-                            ${part.completed ? '✓' : 'Mark Complete'}
-                        </button>
                         <button onclick="addSubpart(${part.id})">Add Subpart</button>
                         <button onclick="addReport(${part.id})">Add Report</button>
                         <button onclick="showEditForm(${part.id})">Edit</button>
@@ -262,6 +268,17 @@ window.onload = function() {
                 `;
                 
                 partDiv.appendChild(partHeader);
+                
+                // Part progress bar
+                const progressDiv = document.createElement('div');
+                progressDiv.className = 'part-progress';
+                progressDiv.innerHTML = `
+                    <div>Part Completion: ${partCompletion}%</div>
+                    <div class="part-progress-bar">
+                        <div class="part-progress-fill" style="width: ${partCompletion}%"></div>
+                    </div>
+                `;
+                partDiv.appendChild(progressDiv);
                 
                 // Part description
                 if (part.description) {
