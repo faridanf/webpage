@@ -1,18 +1,7 @@
-<script>
-window.onload = function() {
-    const password = prompt("Enter password to view this page:");
-    // Replace 'yourpassword' with your actual password
-    if (password !== "Far@par1024154") {
-        window.location.href = "https://your-github-pages-site.com"; // Redirect if wrong
-    }
-    // Page content will show only if password is correct
-};
-</script>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Advanced Progress Tracker</title>
-    <button onclick="showAddPartForm()">Add New Part</button>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
@@ -32,17 +21,53 @@ window.onload = function() {
         .part-progress { margin: 5px 0; }
         .part-progress-bar { height: 10px; background-color: #e0e0e0; border-radius: 5px; overflow: hidden; }
         .part-progress-fill { height: 100%; background-color: #2196F3; width: 0%; transition: width 0.3s; }
+        #compression-btn { margin: 10px 0; padding: 8px 15px; background-color: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
     <script>
+        // ==================== COMPRESSION FEATURE ====================
+        let compressedState = false;
+        
+        function toggleCompression() {
+            compressedState = !compressedState;
+            const parts = document.querySelectorAll('.part');
+            
+            parts.forEach(part => {
+                const details = part.querySelector('.details');
+                const subparts = part.querySelectorAll('.subpart');
+                const reports = part.querySelector('.details h4')?.parentElement;
+                
+                if (compressedState) {
+                    // Compress
+                    if (details) details.classList.add('hidden');
+                    subparts.forEach(sp => sp.classList.add('hidden'));
+                    if (reports) reports.classList.add('hidden');
+                } else {
+                    // Expand
+                    if (details) details.classList.remove('hidden');
+                    subparts.forEach(sp => sp.classList.remove('hidden'));
+                    if (reports) reports.classList.remove('hidden');
+                }
+            });
+            
+            // Update button text
+            const btn = document.querySelector('#compression-btn');
+            if (btn) {
+                btn.textContent = compressedState ? 'Expand All' : 'Compress All';
+            }
+            
+            // Save compression state
+            localStorage.setItem('compressionState', compressedState);
+        }
+        // ==================== END COMPRESSION FEATURE ====================
+
+        // Password protection
         window.onload = function() {
             const password = prompt("Enter password to view this page:");
-            // Replace 'yourpassword' with your actual password
             if (password !== "Far@par1024154") {
-                window.location.href = "https://your-github-pages-site.com"; // Redirect if wrong
+                window.location.href = "https://your-github-pages-site.com";
             }
-            // Page content will show only if password is correct
         };
     </script>
 
@@ -53,11 +78,12 @@ window.onload = function() {
     </div>
     <p>Overall Completion: <span id="percent">0</span>% (<span id="completedCount">0</span>/<span id="totalCount">0</span> parts)</p>
     
+    <button id="compression-btn">Compress All</button>
+    <button onclick="showAddPartForm()">Add New Part</button>
+    
     <div id="partsContainer">
         <!-- Parts will be added here -->
     </div>
-    
-    
     
     <div id="addPartForm" class="hidden">
         <h3>Add New Part</h3>
@@ -81,6 +107,14 @@ window.onload = function() {
         document.addEventListener('DOMContentLoaded', function() {
             renderParts();
             updateProgress();
+            
+            // Initialize compression state from storage
+            const savedState = localStorage.getItem('compressionState');
+            if (savedState === 'true') {
+                compressedState = true;
+                // Delay slightly to ensure parts are rendered first
+                setTimeout(toggleCompression, 100);
+            }
         });
         
         // Form visibility toggles
