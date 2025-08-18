@@ -21,47 +21,49 @@
         .part-progress { margin: 5px 0; }
         .part-progress-bar { height: 10px; background-color: #e0e0e0; border-radius: 5px; overflow: hidden; }
         .part-progress-fill { height: 100%; background-color: #2196F3; width: 0%; transition: width 0.3s; }
-        #compression-btn { margin: 10px 0; padding: 8px 15px; background-color: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover { color: black; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .modal-footer { text-align: right; margin-top: 15px; }
+        .modal-footer button { margin-left: 10px; }
     </style>
 </head>
 <body>
     <script>
-        // ==================== COMPRESSION FEATURE ====================
-        let compressedState = false;
-        
-        function toggleCompression() {
-            compressedState = !compressedState;
-            const parts = document.querySelectorAll('.part');
-            
-            parts.forEach(part => {
-                const details = part.querySelector('.details');
-                const subparts = part.querySelectorAll('.subpart');
-                const reports = part.querySelector('.details h4')?.parentElement;
-                
-                if (compressedState) {
-                    // Compress
-                    if (details) details.classList.add('hidden');
-                    subparts.forEach(sp => sp.classList.add('hidden'));
-                    if (reports) reports.classList.add('hidden');
-                } else {
-                    // Expand
-                    if (details) details.classList.remove('hidden');
-                    subparts.forEach(sp => sp.classList.remove('hidden'));
-                    if (reports) reports.classList.remove('hidden');
-                }
-            });
-            
-            // Update button text
-            const btn = document.querySelector('#compression-btn');
-            if (btn) {
-                btn.textContent = compressedState ? 'Expand All' : 'Compress All';
-            }
-            
-            // Save compression state
-            localStorage.setItem('compressionState', compressedState);
-        }
-        // ==================== END COMPRESSION FEATURE ====================
-
         // Password protection
         window.onload = function() {
             const password = prompt("Enter password to view this page:");
@@ -78,60 +80,87 @@
     </div>
     <p>Overall Completion: <span id="percent">0</span>% (<span id="completedCount">0</span>/<span id="totalCount">0</span> parts)</p>
     
-    <button id="compression-btn">Compress All</button>
-    <button onclick="showAddPartForm()">Add New Part</button>
+    <button onclick="showAddPartModal()">Add New Part</button>
     
     <div id="partsContainer">
         <!-- Parts will be added here -->
     </div>
     
-    <div id="addPartForm" class="hidden">
-        <h3>Add New Part</h3>
-        <div>
-            <label>Part Name:</label>
-            <input type="text" id="newPartName" style="width: 100%; padding: 8px;">
+    <!-- Add Part Modal -->
+    <div id="addPartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddPartModal()">&times;</span>
+            <h3>Add New Part</h3>
+            <div class="form-group">
+                <label for="modalPartName">Part Name:</label>
+                <input type="text" id="modalPartName" placeholder="Enter part name">
+            </div>
+            <div class="form-group">
+                <label for="modalPartDesc">Description:</label>
+                <textarea id="modalPartDesc" placeholder="Enter description"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button onclick="addPartFromModal()">Add Part</button>
+                <button onclick="closeAddPartModal()">Cancel</button>
+            </div>
         </div>
-        <div>
-            <label>Description:</label>
-            <textarea id="newPartDesc"></textarea>
+    </div>
+    
+    <!-- Add Subpart Modal -->
+    <div id="addSubpartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSubpartModal()">&times;</span>
+            <h3>Add Subpart</h3>
+            <div class="form-group">
+                <label for="modalSubpartName">Subpart Name:</label>
+                <input type="text" id="modalSubpartName" placeholder="Enter subpart name">
+            </div>
+            <div class="modal-footer">
+                <button onclick="addSubpartFromModal()">Add Subpart</button>
+                <button onclick="closeSubpartModal()">Cancel</button>
+            </div>
         </div>
-        <button onclick="addPart()">Add Part</button>
-        <button onclick="hideAddPartForm()">Cancel</button>
     </div>
     
     <script>
         // Load saved data or initialize empty array
         let parts = JSON.parse(localStorage.getItem('progressTrackerParts')) || [];
+        let currentPartIdForSubpart = null;
         
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             renderParts();
             updateProgress();
-            
-            // Initialize compression state from storage
-            const savedState = localStorage.getItem('compressionState');
-            if (savedState === 'true') {
-                compressedState = true;
-                // Delay slightly to ensure parts are rendered first
-                setTimeout(toggleCompression, 100);
-            }
         });
         
-        // Form visibility toggles
-        function showAddPartForm() {
-            document.getElementById('addPartForm').classList.remove('hidden');
+        // Modal functions
+        function showAddPartModal() {
+            document.getElementById('addPartModal').style.display = 'block';
+            document.getElementById('modalPartName').focus();
         }
         
-        function hideAddPartForm() {
-            document.getElementById('addPartForm').classList.add('hidden');
-            document.getElementById('newPartName').value = '';
-            document.getElementById('newPartDesc').value = '';
+        function closeAddPartModal() {
+            document.getElementById('addPartModal').style.display = 'none';
+            document.getElementById('modalPartName').value = '';
+            document.getElementById('modalPartDesc').value = '';
         }
         
-        // Add a new part (now adds at the top)
-        function addPart() {
-            const partName = document.getElementById('newPartName').value.trim();
-            const partDesc = document.getElementById('newPartDesc').value.trim();
+        function showAddSubpartModal(partId) {
+            currentPartIdForSubpart = partId;
+            document.getElementById('addSubpartModal').style.display = 'block';
+            document.getElementById('modalSubpartName').focus();
+        }
+        
+        function closeSubpartModal() {
+            document.getElementById('addSubpartModal').style.display = 'none';
+            document.getElementById('modalSubpartName').value = '';
+            currentPartIdForSubpart = null;
+        }
+        
+        // Add a new part from modal
+        function addPartFromModal() {
+            const partName = document.getElementById('modalPartName').value.trim();
+            const partDesc = document.getElementById('modalPartDesc').value.trim();
             
             if (partName) {
                 const part = {
@@ -139,15 +168,26 @@
                     name: partName,
                     description: partDesc,
                     subparts: [],
-                    reports: []
+                    reports: [],
+                    compressed: false
                 };
-                // Add to beginning of array instead of end
+                // Add to beginning of array (top of list)
                 parts.unshift(part);
                 saveData();
                 renderParts();
-                hideAddPartForm();
+                closeAddPartModal();
             } else {
                 alert('Please enter a part name');
+            }
+        }
+        
+        // Toggle compression for a single part
+        function togglePartCompression(partId) {
+            const part = findPart(partId);
+            if (part) {
+                part.compressed = !part.compressed;
+                saveData();
+                renderParts();
             }
         }
         
@@ -159,11 +199,12 @@
             return Math.round((completedSubparts / part.subparts.length) * 100);
         }
         
-        // Add a subpart
-        function addSubpart(partId) {
-            const subpartName = prompt("Enter subpart name:");
-            if (subpartName) {
-                const part = findPart(partId);
+        // Add a subpart from modal
+        function addSubpartFromModal() {
+            const subpartName = document.getElementById('modalSubpartName').value.trim();
+            
+            if (subpartName && currentPartIdForSubpart) {
+                const part = findPart(currentPartIdForSubpart);
                 if (part) {
                     part.subparts.push({
                         id: Date.now(),
@@ -172,7 +213,10 @@
                     });
                     saveData();
                     renderParts();
+                    closeSubpartModal();
                 }
+            } else if (!subpartName) {
+                alert('Please enter a subpart name');
             }
         }
         
@@ -296,9 +340,12 @@
                 partHeader.innerHTML = `
                     <span class="part-title">${escapeHtml(part.name)}</span>
                     <div class="part-actions">
-                        <button onclick="addSubpart(${part.id})">Add Subpart</button>
+                        <button onclick="showAddSubpartModal(${part.id})">Add Subpart</button>
                         <button onclick="addReport(${part.id})">Add Report</button>
                         <button onclick="showEditForm(${part.id})">Edit</button>
+                        <button onclick="togglePartCompression(${part.id})">
+                            ${part.compressed ? 'Expand' : 'Compress'}
+                        </button>
                         <button onclick="deletePart(${part.id})">Delete</button>
                     </div>
                 `;
@@ -317,7 +364,7 @@
                 partDiv.appendChild(progressDiv);
                 
                 // Part description
-                if (part.description) {
+                if (part.description && !part.compressed) {
                     const descDiv = document.createElement('div');
                     descDiv.className = 'details';
                     descDiv.textContent = part.description;
@@ -325,7 +372,7 @@
                 }
                 
                 // Subparts
-                if (part.subparts.length > 0) {
+                if (part.subparts.length > 0 && !part.compressed) {
                     const subpartsContainer = document.createElement('div');
                     subpartsContainer.style.marginTop = '10px';
                     
@@ -345,7 +392,7 @@
                 }
                 
                 // Reports
-                if (part.reports.length > 0) {
+                if (part.reports.length > 0 && !part.compressed) {
                     const reportsContainer = document.createElement('div');
                     reportsContainer.style.marginTop = '10px';
                     reportsContainer.innerHTML = '<h4>Reports/Notes:</h4>';
