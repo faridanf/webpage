@@ -16,5 +16,5 @@ The title, structured profile data, canonical links, `robots.txt`, and sitemap i
 - `news.html`: dated research updates, papers, talks, and Shandong University news with source links.
 - `publications.html`: searchable paper catalog with research-area filters.
 - `styles.css`: responsive site design.
-- `farid-aliniaeifard.png`: cropped portrait from the [UBC Mathematics profile](https://www.math.ubc.ca/postdoctoral-fellow-spotlight-farid-aliniaeifard).
+- `farid-aliniaeifard-portrait.png`: cropped portrait from the [UBC Mathematics profile](https://www.math.ubc.ca/postdoctoral-fellow-spotlight-farid-aliniaeifard).
 - `robots.txt` and `sitemap.xml`: crawl guidance for search engines.
